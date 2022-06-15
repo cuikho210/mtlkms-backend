@@ -12,7 +12,7 @@ class SDTagController {
     }
 
     public async getAll(userID): Promise<Array<SDTagData>> {
-        let result: Array<SDTagData> = await SDTag.getAll(parseInt(userID));
+        let result: Array<SDTagData> = await SDTag.getByUser(parseInt(userID));
 
         return result;
     }

@@ -1,6 +1,8 @@
 import * as express from 'express';
 import * as cookieParser from 'cookie-parser';
+import * as cron from 'node-cron';
 
+import CronJob from './cronjob/cronjob';
 import routes from './router/routes';
 import userRoutes from './router/account/userRoutes';
 import accountRoutes from './router/account/accountRoutes';
@@ -30,6 +32,10 @@ app.use('/study-diary/diary', diaryRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
+});
+
+cron.schedule('0 0 * * *', () => {
+    new CronJob();
 });
 
 export default app;

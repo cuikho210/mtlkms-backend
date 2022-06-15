@@ -32,3 +32,12 @@ export interface diaryData {
     stop_at: string;
     log: string;
 }
+
+export interface studyTimeData {
+    id: number;
+    sdtag: number;
+    user: number;
+    type: number;
+    time: number;
+    created_at: string;
+}
