@@ -43,8 +43,10 @@ class Diary {
                 (err, result) => {
                     if (err) {
                         reject(err);
+                        console.log('[Model diary -> getLearningDiary]', err);
                     } else {
                         resolve(result[0]);
+                        console.log('[Model diary -> getLearningDiary]', result);
                     }
                 }
             );
@@ -95,7 +97,7 @@ class Diary {
                 ORDER BY stop_at DESC`,
 
                 data,
-                
+
                 (err, result) => {
                     if (err) {
                         reject(err);
