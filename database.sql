@@ -43,3 +43,17 @@ CREATE TABLE
     KEY `select_learning` (`user`, `is_learning` DESC),
     KEY `sdtag` (`sdtag`, `user`)
   ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+CREATE TABLE
+  `studytimes` (
+    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `user` int(11) unsigned DEFAULT NULL,
+    `sdtag` int(11) unsigned DEFAULT NULL,
+    `type` int(1) unsigned DEFAULT 0,
+    `time` int(11) unsigned DEFAULT NULL,
+    `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+    PRIMARY KEY (`id`),
+    KEY `user` (`user`),
+    KEY `sdtag` (`sdtag`),
+    KEY `type` (`type`)
+  ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
