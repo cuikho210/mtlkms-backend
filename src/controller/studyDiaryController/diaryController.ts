@@ -29,7 +29,6 @@ class DiaryController {
 
     public async getLearningDiary(user: string): Promise<diaryData> {
         let result: diaryData = await diary.getLearningDiary(user);
-        console.log('[diaryController -> getLearningDiary]', result);
         
         if (result) {
             return result;

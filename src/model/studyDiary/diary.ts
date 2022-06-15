@@ -35,7 +35,7 @@ class Diary {
                 FROM diaries
                 INNER JOIN sdtags ON diaries.sdtag = sdtags.id
                 WHERE
-                    diaries.user = 9
+                    diaries.user = ?
                     AND is_learning = 1`,
 
                 [user],
@@ -43,10 +43,8 @@ class Diary {
                 (err, result) => {
                     if (err) {
                         reject(err);
-                        console.log('[Model diary -> getLearningDiary]', err);
                     } else {
                         resolve(result[0]);
-                        console.log('[Model diary -> getLearningDiary]', result);
                     }
                 }
             );
