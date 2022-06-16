@@ -4,6 +4,17 @@ Học hành chăm chỉ ^^
 Backend of [MTLKMS](https://mtlkms.github.io)
 
 ## Development
+### Build your docker image
+Open `/Dockerfile` and remove line
+```Dockerfile
+RUN rm /app/docker-compose.yml
+```
+
+And build your docker image
+```bash
+sudo docker build -t user/name:tag .
+```
+
 ### Create docker-compose file
 In `/`, create `docker-compose.yml`
 ```yml
@@ -32,7 +43,7 @@ services:
     restart: unless-stopped     # or "always"
     command: /bin/sh -c "nginx -g 'daemon off;'"
   app:
-    image: cuikho210/mtlkms:dev
+    image: cuikho210/mtlkms:dev # Your docker image
     environment:
       DB_HOST: "mysql"
       DB_USER: ""
