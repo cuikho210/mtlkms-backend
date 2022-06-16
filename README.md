@@ -25,8 +25,8 @@ services:
     image: nginx:stable-alpine
     volumes:
       - ./nginx/host.conf:/etc/nginx/conf.d/default.conf
-      - ./nginx/ssl/localhost.crt:/root/ssl/localhost.crt
-      - ./nginx/ssl/localhost.key:/root/ssl/localhost.key
+      - ./nginx/ssl/localhost.crt:/root/ssl/localhost.crt # Link to your SSL cert in here
+      - ./nginx/ssl/localhost.key:/root/ssl/localhost.key # And change your nameserver in /nginx/host.conf
     network_mode: host
     ipc: host
     restart: unless-stopped     # or "always"
@@ -44,8 +44,8 @@ services:
       - 3000:3000
     links:
       - mysql
-    volumes:
-      - ./src:/app/src # For development, remove this line when prod
+    volumes:  # Only for dev, remove in prod
+      - ./src:/app/src
 ```
 Replace `MYSQL_ROOT_PASSWORD`, `MYSQL_USER`, `MYSQL_PASSWORD`, `DB_USER`, `DB_PASSWORD`, `SALT`, `EMAIL_PASSWORD`, `CLIENT_URL`
 
