@@ -35,29 +35,22 @@ services:
 
 Fill in there the path to the 2 ssl files and your username and password
 
-### Create password file
-In `/src` create `pwd.ts`
-```typescript
-export const dbpwd: string = '';
-export const salt: string = '';
-export const gmailpwd: string = '';
+### Create env file
+In `/` create `.env`
+```
+DB_USER=""
+DB_PASSWORD=""
+
+SALT=""
+EMAIL_PASSWORD=""
+
+CLIENT_URL="http://localhost:8080"
 ```
 
-`dbpwd` is your database password (In docker-compose file)  
-`salt` is your salt (for hash password and token)  
-`gmailpwd` is your gmail password 🦫
-
-### Fix CORS
-In order for the backend and frontend to connect with each other, you must have SSL and do the following
-
-Open `/src/server.ts` and edit line:
-```typescript
-...
-res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
-...
-```
-
-Replace `http://localhost:8080` with your frontend domain name
+`DB_USER` and `DB_PASSWORD` is your database user and password (In docker-compose file)  
+`SALT` is your salt (for hash password and token)  
+`EMAIL_PASSWORD` is your email password (for send email) 🦫  
+`CLIENT_URL` is your client URL (for CORS)
 
 ### Create Database
 First, create a database named mtlkms  
