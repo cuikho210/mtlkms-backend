@@ -3,3 +3,4 @@ pwd.js
 docker-compose.yml
 mysqldata/*
 node_modules
+.env

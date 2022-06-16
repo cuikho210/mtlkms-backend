@@ -1,10 +1,12 @@
 import * as mysql from 'mysql';
-import { dbpwd } from './pwd';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 const connection = mysql.createPool({
     host: 'localhost',
-    user: 'cuikho210',
-    password: dbpwd,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
     database: 'mtlkms'
 });
 

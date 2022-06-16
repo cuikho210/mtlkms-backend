@@ -1,22 +1,20 @@
 import * as md5 from 'md5';
 import * as fs from 'fs';
 import * as multer from 'multer';
+import * as dotenv from 'dotenv';
 import account from "../../model/account/account";
 import validator from "../../model/validator";
-import { salt } from "../../pwd";
 import { UserData, DbResult, ChangePasswordData } from "../../model/account/accountInterface";
 
+dotenv.config();
+
 class AccountController {
-    constructor () {
-
-    }
-
     private genToken (username: string, id: number) : string {
-        return username + '__'  + md5(id + salt);
+        return username + '__'  + md5(id + process.env.SALT);
     }
 
     private hashPassword (password: string) : string {
-        return md5(password + salt);
+        return md5(password + process.env.SALT);
     }
 
     private matchPassword (password: string, hash: string) : boolean {

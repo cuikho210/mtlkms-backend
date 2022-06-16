@@ -1,6 +1,7 @@
 import * as express from 'express';
 import * as cookieParser from 'cookie-parser';
 import * as cron from 'node-cron';
+import * as dotenv from 'dotenv';
 
 import CronJob from './cronjob/cronjob';
 import routes from './router/routes';
@@ -8,6 +9,8 @@ import userRoutes from './router/account/userRoutes';
 import accountRoutes from './router/account/accountRoutes';
 import SDTagRoutes from './router/studyDiary/SDTagRoutes';
 import diaryRoutes from './router/studyDiary/diaryRoutes';
+
+dotenv.config();
 
 const PORT: number = 3000;
 
@@ -17,7 +20,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
+    res.header('Access-Control-Allow-Origin', process.env.CLIENT_URL);
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.header('Access-Control-Allow-Credentials', 'true');
