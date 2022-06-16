@@ -7,15 +7,15 @@ Backend of [MTLKMS](https://mtlkms.github.io)
 ### Create docker-compose file
 In `/`, create `docker-compose.yml`
 ```yml
-version: '3.5'
+version: '3'
 services:
   mysql:
     image: mariadb:latest
     environment:
       TZ: UTC-7
-      MYSQL_ROOT_PASSWORD: 'your_root_password'
-      MYSQL_USER: 'your_username'
-      MYSQL_PASSWORD: 'your_password'
+      MYSQL_ROOT_PASSWORD: ''
+      MYSQL_USER: ''
+      MYSQL_PASSWORD: ''
       MYSQL_DATABASE: 'mtlkms'
     volumes:
       - ./mysqldata:/var/lib/mysql
@@ -31,26 +31,33 @@ services:
     ipc: host
     restart: unless-stopped     # or "always"
     command: /bin/sh -c "nginx -g 'daemon off;'"
+  app:
+    image: cuikho210/mtlkms:dev
+    environment:
+      DB_HOST: "mysql"
+      DB_USER: ""
+      DB_PASSWORD: ""
+      SALT: ""
+      EMAIL_PASSWORD: ""
+      CLIENT_URL: "http://localhost:8080"
+    ports:
+      - 3000:3000
+    links:
+      - mysql
+    volumes:
+      - ./src:/app/src # For development, remove this line when prod
 ```
+Replace `MYSQL_ROOT_PASSWORD`, `MYSQL_USER`, `MYSQL_PASSWORD`, `DB_USER`, `DB_PASSWORD`, `SALT`, `EMAIL_PASSWORD`, `CLIENT_URL`
 
-Fill in there the path to the 2 ssl files and your username and password
+- `MYSQL_USER` = `DB_USER`
+- `MYSQL_PASSWORD` = `DB_PASSWORD`
+- `SALT` is any string (For hash password and gen token)
+- `CLIENT_URL` is your client URL (Use for CORS)
 
-### Create env file
-In `/` create `.env`
+### Run docker-compose
+```bash
+sudo docker-compose up
 ```
-DB_USER=""
-DB_PASSWORD=""
-
-SALT=""
-EMAIL_PASSWORD=""
-
-CLIENT_URL="http://localhost:8080"
-```
-
-`DB_USER` and `DB_PASSWORD` is your database user and password (In docker-compose file)  
-`SALT` is your salt (for hash password and token)  
-`EMAIL_PASSWORD` is your email password (for send email) 🦫  
-`CLIENT_URL` is your client URL (for CORS)
 
 ### Create Database
 First, create a database named mtlkms  
@@ -66,18 +73,6 @@ sudo nano /etc/hosts
 and add the following line
 ```
 127.0.0.1       server.test
-```
-
-### Start to develop
-Run the following commands one by one
-```bash
-npm install
-```
-```bash
-sudo docker-compose up -d
-```
-```bash
-npm run dev
 ```
 
 And now your server is ready on https://server.test
