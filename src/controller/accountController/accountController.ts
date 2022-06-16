@@ -1,12 +1,9 @@
 import * as md5 from 'md5';
 import * as fs from 'fs';
 import * as multer from 'multer';
-import * as dotenv from 'dotenv';
 import account from "../../model/account/account";
 import validator from "../../model/validator";
 import { UserData, DbResult, ChangePasswordData } from "../../model/account/accountInterface";
-
-dotenv.config();
 
 class AccountController {
     private genToken (username: string, id: number) : string {

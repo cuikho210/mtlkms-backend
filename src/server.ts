@@ -1,7 +1,6 @@
 import * as express from 'express';
 import * as cookieParser from 'cookie-parser';
 import * as cron from 'node-cron';
-import * as dotenv from 'dotenv';
 
 import CronJob from './cronjob/cronjob';
 import routes from './router/routes';
@@ -9,8 +8,6 @@ import userRoutes from './router/account/userRoutes';
 import accountRoutes from './router/account/accountRoutes';
 import SDTagRoutes from './router/studyDiary/SDTagRoutes';
 import diaryRoutes from './router/studyDiary/diaryRoutes';
-
-dotenv.config();
 
 const PORT: number = 3000;
 
