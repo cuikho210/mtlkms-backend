@@ -45,7 +45,7 @@ services:
     links:
       - mysql
     volumes:  # Only for dev, remove in prod
-      - ./src:/app/src
+      - ./:/app
 ```
 Replace `MYSQL_ROOT_PASSWORD`, `MYSQL_USER`, `MYSQL_PASSWORD`, `DB_USER`, `DB_PASSWORD`, `SALT`, `EMAIL_PASSWORD`, `CLIENT_URL`
 
