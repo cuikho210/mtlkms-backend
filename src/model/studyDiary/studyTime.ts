@@ -1,5 +1,5 @@
 import db from '../../dbconnection';
-import { DbResult } from './SDInterface';
+import { DbResult, studyTimeData } from './SDInterface';
 
 class StudyTime {
     saveTimeDay(data: Array<number>): Promise<DbResult> {
@@ -47,6 +47,45 @@ class StudyTime {
                     resolve(result);
                 }
             });
+        });
+    }
+
+    getTimeMonthByTag(data: Array<number>): Promise<studyTimeData[]> {
+        return new Promise((resolve, reject) => {
+            db.query('SELECT * FROM studytimes WHERE sdtag = ? AND MONTH(created_at) = ? AND (type = 0 OR type = 1 OR type = 2)', data, (err, result) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(result);
+                }
+            });
+        });
+    }
+
+    getTimeMonthByUser(data: Array<number>): Promise<studyTimeData[]> {
+        return new Promise((resolve, reject) => {
+            db.query(
+                `SELECT
+                    type,
+                    created_at,
+                    SUM(time) as time
+                FROM studytimes
+                WHERE
+                    user = ?
+                    AND (type = 0 OR type = 1 OR type = 2)
+                    AND MONTH(created_at) = ?
+                GROUP BY created_at, type`,
+
+                data,
+
+                (err, result) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                }
+            );
         });
     }
 }

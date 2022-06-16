@@ -1,8 +1,9 @@
 import diary from '../../model/studyDiary/diary';
 import accountController from '../../controller/accountController/accountController';
-import { DbResult, SDTagData, diaryData } from '../../model/studyDiary/SDInterface';
+import { DbResult, SDTagData, diaryData, studyTimeData } from '../../model/studyDiary/SDInterface';
 import { UserData } from '../../model/account/accountInterface';
 import SDTag from '../../model/studyDiary/SDTag';
+import studyTime from '../../model/studyDiary/studyTime';
 
 class DiaryController {
     public async create(token: string, data: diaryData): Promise<diaryData> {
@@ -76,16 +77,24 @@ class DiaryController {
         return sdtag;
     }
 
-    public async getDiariesBySDTag(sdtag: number, user: number, month: number, year: number): Promise<diaryData[]> {
-        let result: diaryData[] = await diary.getDiariesBySDTag([sdtag, user, month, year]);
+    public async getDiariesBySDTag(sdtag: number, user: number, month: number, year: number) {
+        let diaries: diaryData[] = await diary.getDiariesBySDTag([sdtag, user, month, year]);
+        let times: studyTimeData[] = await studyTime.getTimeMonthByTag([sdtag, month]);
 
-        return result;
+        return {
+            diaries: diaries,
+            times: times
+        };
     }
 
-    public async getDiariesByUser(user: number, month: number, year: number): Promise<diaryData[]> {
-        let result: diaryData[] = await diary.getDiariesByUser([user, month, year]);
+    public async getDiariesByUser(user: number, month: number, year: number) {
+        let diaries: diaryData[] = await diary.getDiariesByUser([user, month, year]);
+        let times: studyTimeData[] = await studyTime.getTimeMonthByUser([user, month]);
 
-        return result;
+        return {
+            diaries: diaries,
+            times: times
+        };
     }
 }
 
