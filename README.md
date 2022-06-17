@@ -24,9 +24,9 @@ services:
     image: mariadb:latest
     environment:
       TZ: UTC-7
-      MYSQL_ROOT_PASSWORD: ''
-      MYSQL_USER: ''
-      MYSQL_PASSWORD: ''
+      MYSQL_ROOT_PASSWORD: '' # Your mysql root password
+      MYSQL_USER: '' # Your mysql user
+      MYSQL_PASSWORD: '' # Your mysql password
       MYSQL_DATABASE: 'mtlkms'
     volumes:
       - ./mysqldata:/var/lib/mysql
@@ -36,26 +36,25 @@ services:
     image: nginx:stable-alpine
     volumes:
       - ./nginx/host.conf:/etc/nginx/conf.d/default.conf
-      - ./nginx/ssl/localhost.crt:/root/ssl/localhost.crt # Link to your SSL cert in here
-      - ./nginx/ssl/localhost.key:/root/ssl/localhost.key # And change your nameserver in /nginx/host.conf
-    network_mode: host
-    ipc: host
-    restart: unless-stopped     # or "always"
-    command: /bin/sh -c "nginx -g 'daemon off;'"
+      - ./nginx/ssl/localhost.crt:/root/ssl/localhost.crt # Your ssl file
+      - ./nginx/ssl/localhost.key:/root/ssl/localhost.key # Change file name in /nginx/host.conf
+    ports:
+      - 80:80
+      - 443:443
+    links:
+      - app:mtlkms
   app:
-    image: cuikho210/mtlkms:dev # Your docker image
+    image: cuikho210/mtlkms:amd64
     environment:
       DB_HOST: "mysql"
-      DB_USER: ""
-      DB_PASSWORD: ""
-      SALT: ""
+      DB_USER: "" # Equal MYSQL_USER
+      DB_PASSWORD: "" # Equal MYSQL_PASSWORD
+      SALT: "" # Any string
       EMAIL_PASSWORD: ""
-      CLIENT_URL: "http://localhost:8080"
-    ports:
-      - 3000:3000
+      CLIENT_URL: "http://localhost:8080" # Your client URL
     links:
       - mysql
-    volumes:  # Only for dev, remove in prod
+    volumes:
       - ./:/app
 ```
 Replace `MYSQL_ROOT_PASSWORD`, `MYSQL_USER`, `MYSQL_PASSWORD`, `DB_USER`, `DB_PASSWORD`, `SALT`, `EMAIL_PASSWORD`, `CLIENT_URL`
