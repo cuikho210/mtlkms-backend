@@ -1,6 +1,7 @@
 import * as express from 'express';
 import * as path from 'path';
 import accountController from '../../controller/accountController/accountController';
+import { UserData } from '../../model/account/accountInterface';
 
 const router = express.Router();
 
@@ -78,27 +79,28 @@ router.put('/password', (req, res, next) => {
 });
 
 // Update avatar
-router.put('/:username/avatar', (req, res, next) => {
+router.put('/avatar', (req, res, next) => {
     if (!req.cookies.token) {
         res.status(400).json({
             success: false,
-            error: 'Not logged in yet'
+            error: 'Not logged in'
         });
+
+        return;
     }
-    else {
-        accountController.updateAvatar(req, res, req.cookies.token)
-        .then(() => {
-            res.json({
-                success: true
-            });
-        })
-        .catch(err => {
-            res.status(400).json({
-                success: false,
-                error: err.message
-            });
+
+    accountController.updateAvatar(req, res, req.cookies.token)
+    .then(() => {
+        res.json({
+            success: true
         });
-    }
+    })
+    .catch(err => {
+        res.status(400).json({
+            success: false,
+            error: err.message
+        });
+    });
 });
 
 export default router;

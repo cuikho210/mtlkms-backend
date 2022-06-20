@@ -43,6 +43,11 @@ class DiaryController {
         // Check if the user is logged in
         let userData: UserData = await accountController.getUserDataFromToken(token);
 
+        // Validate data
+        if (data.id == undefined || data.id == null) {
+            throw new Error('Diary ID is missing');
+        }
+
         // Update Diary
         let result: DbResult = await diary.stopLearningDiary([data.log, String(data.id), String(userData.id)]);
 
