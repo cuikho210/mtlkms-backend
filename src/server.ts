@@ -34,7 +34,7 @@ app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
 
-cron.schedule('59 23 * * *', () => {
+cron.schedule('50 59 23 * * *', () => {
     new CronJob();
 });
 

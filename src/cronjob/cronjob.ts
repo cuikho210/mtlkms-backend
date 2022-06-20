@@ -4,19 +4,19 @@ import { DbResult, SDTagData, studyTimeData } from '../model/studyDiary/SDInterf
 
 class CronJob {
     private date: Date;
-    private isMonday: boolean;
+    private isSaturday: boolean;
     private isFirstDay: boolean;
     private isFirstMonth: boolean;
 
     constructor () {
         this.date = new Date();
 
-        this.isMonday = (this.date.getDay() == 1);
+        this.isSaturday = (this.date.getDay() == 6);
         this.isFirstDay = (this.date.getDate() == 1);
         this.isFirstMonth = (this.date.getMonth() == 0);
 
         console.log('Cronjob: ' + this.date);
-        console.log('Is Monday: ' + this.isMonday);
+        console.log('Is Saturday: ' + this.isSaturday);
         console.log('Is first day: ' + this.isFirstDay);
         console.log('Is first month: ' + this.isFirstMonth);
         console.log('----------------------------------------');
@@ -35,7 +35,7 @@ class CronJob {
 
             await studyTime.saveTimeDay([tag.user, tag.id, tag.time_today]);
 
-            if (this.isMonday) {
+            if (this.isSaturday) {
                 await studyTime.saveTimeWeek([tag.user, tag.id, tag.time_week]);
                 isResetTimeWeek = true;
             }
