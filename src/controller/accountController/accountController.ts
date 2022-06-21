@@ -93,14 +93,8 @@ class AccountController {
         };
     }
 
-    public async getAll () {
-        return await account.getAll()
-        .then(result => {
-            return result;
-        })
-        .catch(err => {
-            throw err;
-        });
+    public getAll () {
+        return account.getAll();
     }
 
     public async create (data: UserData) {

@@ -28,7 +28,7 @@ router.get('/', (req, res) => {
     .then(result => {
         res.json({
             success: true,
-            result
+            data: result
         });
     })
     .catch(err => {
