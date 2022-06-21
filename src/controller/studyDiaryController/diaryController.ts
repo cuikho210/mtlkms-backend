@@ -1,5 +1,6 @@
 import diary from '../../model/studyDiary/diary';
 import accountController from '../../controller/accountController/accountController';
+import SDTagController from '../../controller/studyDiaryController/SDTagController';
 import { DbResult, SDTagData, diaryData, studyTimeData } from '../../model/studyDiary/SDInterface';
 import { UserData } from '../../model/account/accountInterface';
 import SDTag from '../../model/studyDiary/SDTag';
@@ -9,6 +10,13 @@ class DiaryController {
     public async create(token: string, data: diaryData): Promise<diaryData> {
         // Check if the user is logged in
         let userData: UserData = await accountController.getUserDataFromToken(token);
+
+        // Check if the user has a tag
+        let tagData: SDTagData = await SDTagController.getTag(data.sdtag);
+
+        if (!tagData || tagData.user != userData.id) {
+            throw new Error('Unauthenticated user');
+        }
 
         // Create
         let result: DbResult = await diary.create([String(data.sdtag), String(userData.id)]);
@@ -40,12 +48,19 @@ class DiaryController {
     }
 
     public async stopLearningDiary(token: string, data: diaryData): Promise<SDTagData> {
-        // Check if the user is logged in
-        let userData: UserData = await accountController.getUserDataFromToken(token);
-
         // Validate data
         if (data.id == undefined || data.id == null) {
             throw new Error('Diary ID is missing');
+        }
+
+        // Check if the user is logged in
+        let userData: UserData = await accountController.getUserDataFromToken(token);
+   
+        // Check if the user has a tag
+        let diaryData: diaryData = await diary.getDiary(data.id);
+
+        if (!diaryData || diaryData.user != userData.id) {
+            throw new Error('Unauthenticated user');
         }
 
         // Update Diary
@@ -56,10 +71,11 @@ class DiaryController {
         }
 
         // Update tag
-        let diaryData: diaryData = await diary.getDiary(data.id);
+        // diaryData: diaryData = await diary.getDiary(data.id);
 
         let startTime = new Date(diaryData.start_at);
-        let stopTime = new Date(diaryData.stop_at);
+        let stopTime = new Date();
+        console.log(startTime, stopTime);
         let timeDiff = stopTime.getTime() - startTime.getTime();
         let timeDiffMinutes = Math.round(timeDiff / 60000);
 
