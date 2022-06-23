@@ -138,6 +138,37 @@ class Diary {
             );
         });
     }
+
+    public getAll (limit: number): Promise<diaryData[]> {
+        return new Promise((resolve, reject) => {
+            db.query(
+                `SELECT
+                    diaries.id,
+                    diaries.sdtag,
+                    diaries.start_at,
+                    diaries.stop_at,
+                    diaries.log,
+                    sdtags.name,
+                    users.name as user,
+                    users.username
+                FROM diaries
+                INNER JOIN sdtags ON sdtags.id = diaries.sdtag
+                INNER JOIN users ON users.id = diaries.user
+                ORDER BY diaries.stop_at DESC
+                LIMIT ?`,
+
+                [limit],
+                
+                (err, result) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                }
+            );
+        });
+    }
 }
 
 export default new Diary();

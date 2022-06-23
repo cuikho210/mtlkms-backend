@@ -117,6 +117,12 @@ class DiaryController {
             times: times
         };
     }
+
+    public async getAll (limit: number): Promise<diaryData[]> {
+        let diaries: diaryData[] = await diary.getAll(limit);
+
+        return diaries;
+    }
 }
 
 export default new DiaryController();

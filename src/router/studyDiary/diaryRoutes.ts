@@ -3,6 +3,23 @@ import diaryController from '../../controller/studyDiaryController/diaryControll
 
 const router = express.Router();
 
+// Get all diaries
+router.get('/all', (req, res) => {
+    let limit = parseInt(req.query.limit) || 10;
+
+    diaryController.getAll(limit).then(result => {
+        res.json({
+            success: true,
+            data: result
+        });
+    }).catch(err => {
+        res.status(400).json({
+            success: false,
+            error: err.message
+        });
+    });
+});
+
 // Start learning diary
 router.post('/', (req, res) => {
     diaryController.create(req.cookies.token, req.body).then(result => {
