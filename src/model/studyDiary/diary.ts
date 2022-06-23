@@ -76,6 +76,7 @@ class Diary {
     }
 
     public getDiariesBySDTag(data: Array<number>): Promise<Array<diaryData>> {
+        console.log(data)
         return new Promise((resolve, reject) => {
             db.query(
                 `SELECT
@@ -91,7 +92,6 @@ class Diary {
                     AND user = ?
                     AND MONTH(stop_at) = ?
                     AND YEAR(stop_at) = ?
-                    AND is_learning = 0
                 ORDER BY stop_at DESC`,
 
                 data,
@@ -124,9 +124,10 @@ class Diary {
                     diaries.user = ?
                     AND MONTH(diaries.stop_at) = ?
                     AND YEAR(diaries.stop_at) = ?
-                    AND diaries.is_learning = 0
                 ORDER BY diaries.stop_at DESC`,
+
                 data,
+                
                 (err, result) => {
                     if (err) {
                         reject(err);
