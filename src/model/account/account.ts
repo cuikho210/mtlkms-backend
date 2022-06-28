@@ -44,7 +44,7 @@ class Account {
 
     public login(data: Array<string>) {
         return new Promise((resolve, reject) => {
-            db.query('SELECT * FROM users WHERE username=? AND password=?', data, (err, result) => {
+            db.query('SELECT * FROM users WHERE BINARY username=? AND password=?', data, (err, result) => {
                 if (err) {
                     reject(err);
                 } else {
