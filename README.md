@@ -1,88 +1,138 @@
-# MTLKMS Backend
-Học hành chăm chỉ ^^
+# MTLKMS - App học tập của nhà vịt :duck:
+URL: https://mtlkms.github.io  
+Author: *cuikho210*
 
-Backend of [MTLKMS](https://mtlkms.github.io)
+## Kho lưu trữ
+Backend: https://github.com/cuikho210/mtlkms-backend  
+Frontend: https://github.com/cuikho210/mtlkms-frontend  
+Build: https://github.com/mtlkms/mtlkms.github.io
 
-## Development
-### Build your docker image
-Open `/Dockerfile` and remove line
-```Dockerfile
-RUN rm /app/docker-compose.yml
-```
-
-And build your docker image
+## Dev
 ```bash
-sudo docker build -t user/name:tag .
+git clone https://github.com/cuikho210/mtlkms-backend
+cd mtlkms-backend
+npm install
+mv docker-compose-demo.yml docker-compose.yml
+```
+Chỉnh sửa `docker-compose.yml` theo ý của bạn :smile:  
+Sửa `nginx/host.conf` cho khớp với domain và SSL file của bạn  
+Sửa volume tại `docker-compose.yml` cho khớp với SSL file và `nginx/host.conf`  
+
+Sau khi đã cấu hình hoàn tất, chạy `docker-compose up`
+
+Sử dụng sqlclient bất kì truy cập vào `mariadb` `localhost:3306` với mật khẩu bạn đã đặt trong `docker-compose.yml`.  
+Tạo database có tên `mtlkms`  
+Tạo lần lượt từng bảng bằng script trong `database.sql`
+
+## Build
+Build docker image với sudo để không gặp các vấn đề với phân quyền thư mục mysqldata:
+
+```bash
+sudo docker build -t yourname/mtlkms:tag .
 ```
 
-### Create docker-compose file
-In `/`, create `docker-compose.yml`
+Sử dụng docker buildx để build image cho server có kiến trúc khác:
+```bash
+sudo docker buildx build --platform linux/arm64/v8 -t yourname/mtlkms:arm64v8 .
+```
+Sau khi build xong, push lên docker hub:
+```bash
+docker push yourname/mtlkms:tag
+```
+
+## Triển khai phía server
+Tạo một thư mục mới cùng `docker-compose.yml`
+```bash
+mkdir mtlkms
+cd mtlkms
+touch docker-compose.yml
+```
+
 ```yml
+# docker-compose.yml
+
 version: '3'
 services:
   mysql:
     image: mariadb:latest
     environment:
       TZ: UTC-7
-      MYSQL_ROOT_PASSWORD: '' # Your mysql root password
-      MYSQL_USER: '' # Your mysql user
-      MYSQL_PASSWORD: '' # Your mysql password
+      MYSQL_ROOT_PASSWORD: 'root_password'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
       MYSQL_DATABASE: 'mtlkms'
     volumes:
       - ./mysqldata:/var/lib/mysql
     ports:
       - 3306:3306
+  app:
+    image: cuikho210/mtlkms:arm64v8 # Hoặc cuikho210/mtlkms:amd64
+    environment:
+      DB_HOST: "mysql"
+      DB_USER: "user"
+      DB_PASSWORD: "password"
+      SALT: "any_string"
+      EMAIL_PASSWORD: ""
+      CLIENT_URL: "https://yourclienturl"
+    links:
+      - mysql
+    volumes:
+      - ./users:/app/assets/users
   nginx:
     image: nginx:stable-alpine
     volumes:
       - ./nginx/host.conf:/etc/nginx/conf.d/default.conf
-      - ./nginx/ssl/localhost.crt:/root/ssl/localhost.crt # Your ssl file
-      - ./nginx/ssl/localhost.key:/root/ssl/localhost.key # Change file name in /nginx/host.conf
+      - /home/ubuntu/ssl/live/domain/fullchain.pem:/root/ssl/fullchain.pem
+      - /home/ubuntu/ssl/live/domain/privkey.pem:/root/ssl/privkey.pem
+      - ./nginx/log:/var/log/nginx
+    environment:
+      TZ: 'Asia/Ho_Chi_Minh'
     ports:
       - 80:80
       - 443:443
     links:
       - app:mtlkms
-  app:
-    image: cuikho210/mtlkms:amd64
-    environment:
-      DB_HOST: "mysql"
-      DB_USER: "" # Equal MYSQL_USER
-      DB_PASSWORD: "" # Equal MYSQL_PASSWORD
-      SALT: "" # Any string
-      EMAIL_PASSWORD: ""
-      CLIENT_URL: "http://localhost:8080" # Your client URL
-    links:
-      - mysql
-    volumes:
-      - ./:/app
 ```
-Replace `MYSQL_ROOT_PASSWORD`, `MYSQL_USER`, `MYSQL_PASSWORD`, `DB_USER`, `DB_PASSWORD`, `SALT`, `EMAIL_PASSWORD`, `CLIENT_URL`
 
-- `MYSQL_USER` = `DB_USER`
-- `MYSQL_PASSWORD` = `DB_PASSWORD`
-- `SALT` is any string (For hash password and gen token)
-- `CLIENT_URL` is your client URL (Use for CORS)
-
-### Run docker-compose
 ```bash
-sudo docker-compose up
+# nginx/host.conf
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name domain www.domain;
+    return         301 https://$server_name$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name domain www.domain;
+    ssl_certificate /root/ssl/fullchain.pem;
+    ssl_certificate_key /root/ssl/privkey.pem;
+
+    sendfile on;
+
+    charset utf-8;
+    # max upload size
+    client_max_body_size 50G; # adjust to taste
+
+    location / {
+        proxy_pass http://mtlkms:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+    }
+}
 ```
 
-### Create Database
-First, create a database named mtlkms  
-Then open the `/database.sql` file and run the commands in it using your sqlclient
-
-### Change your hosts file
-Open your host file
+Tạo các thư mục volume
 ```bash
-# On linux
-sudo nano /etc/hosts
-# Or use your favorite editor
-```
-and add the following line
-```
-127.0.0.1       server.test
+mkdir mysqldata # Chứa dữ liệu từ cơ sở dữ liệu
+mkdir users # Chứa dữ liệu người dùng
+mkdir nginx/log # Chứa log của nginx
 ```
 
-And now your server is ready on https://server.test
+Sau khi cấu hình hoàn tất, chạy `docker-compose up` và tạo database `mtlkms` với các bảng trong `database.sql`
+
+Bây giờ, server của bạn đã sẵn sàng!
