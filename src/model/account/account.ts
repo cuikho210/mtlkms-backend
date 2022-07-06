@@ -8,25 +8,62 @@ class Account {
     
     public get(username: string) : Promise<UserData> {
         return new Promise((resolve, reject) => {
-            db.query('SELECT * FROM users where username=?', [username], (err, result) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(result[0]);
+            db.query(
+                `SELECT
+                    users.*,
+                    SUM(sdtags.time_today) as time_today,
+                    SUM(sdtags.time_week) as time_week,
+                    SUM(sdtags.time_month) as time_month,
+                    SUM(sdtags.time_year) as time_year,
+                    SUM(sdtags.time_total) as time_total
+                FROM users
+                LEFT JOIN sdtags
+                ON sdtags.user=users.id
+                WHERE
+                    users.username=?
+                `,
+            
+                [username],
+
+                (err, result) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result[0]);
+                    }
                 }
-            });
+            );
         });
     }
 
     public getAll() {
         return new Promise((resolve, reject) => {
-            db.query('SELECT id, name, username, email, slogan, created_at FROM users', (err, result) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(result);
+            db.query(
+                `SELECT
+                    users.id,
+                    users.name,
+                    users.username,
+                    users.email,
+                    users.slogan,
+                    users.created_at,
+                    SUM(sdtags.time_today) as time_today,
+                    SUM(sdtags.time_week) as time_week,
+                    SUM(sdtags.time_month) as time_month,
+                    SUM(sdtags.time_year) as time_year,
+                    SUM(sdtags.time_total) as time_total
+                FROM users
+                LEFT JOIN sdtags
+                ON sdtags.user=users.id
+                GROUP BY users.id`,
+
+                (err, result) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
                 }
-            });
+            );
         });
     }
 
@@ -44,13 +81,32 @@ class Account {
 
     public login(data: Array<string>) {
         return new Promise((resolve, reject) => {
-            db.query('SELECT * FROM users WHERE BINARY username=? AND password=?', data, (err, result) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(result[0]);
+            db.query(
+                `SELECT
+                    users.*,
+                    SUM(sdtags.time_today) as time_today,
+                    SUM(sdtags.time_week) as time_week,
+                    SUM(sdtags.time_month) as time_month,
+                    SUM(sdtags.time_year) as time_year,
+                    SUM(sdtags.time_total) as time_total
+                FROM users
+                LEFT JOIN sdtags
+                ON users.id=sdtags.user
+                WHERE
+                    BINARY username=?
+                    AND password=?
+                `,
+
+                data,
+
+                (err, result) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result[0]);
+                    }
                 }
-            });
+            );
         });
     }
 

@@ -89,7 +89,12 @@ class AccountController {
             slogan: userData.slogan,
             created_at: userData.created_at,
             password: '',
-            forget_pwd: ''
+            forget_pwd: '',
+            time_today: userData.time_today,
+            time_week: userData.time_week,
+            time_month: userData.time_month,
+            time_year: userData.time_year,
+            time_total: userData.time_total
         };
     }
 
@@ -155,7 +160,12 @@ class AccountController {
                 username: userData.username,
                 email: userData.email,
                 slogan: userData.slogan,
-                created_at: userData.created_at
+                created_at: userData.created_at,
+                time_today: 0,
+                time_week: 0,
+                time_month: 0,
+                time_year: 0,
+                time_total:0
             }
         };
     }
@@ -199,7 +209,12 @@ class AccountController {
                     username: userData.username,
                     email: userData.email,
                     slogan: userData.slogan,
-                    created_at: userData.created_at
+                    created_at: userData.created_at,
+                    time_today: userData.time_today,
+                    time_week: userData.time_week,
+                    time_month: userData.time_month,
+                    time_year: userData.time_year,
+                    time_total: userData.time_total
                 }
             };
         }
@@ -214,7 +229,12 @@ class AccountController {
             username: userData.username,
             email: userData.email,
             slogan: userData.slogan,
-            created_at: userData.created_at
+            created_at: userData.created_at,
+            time_today: userData.time_today,
+            time_week: userData.time_week,
+            time_month: userData.time_month,
+            time_year: userData.time_year,
+            time_total: userData.time_total
         };
     }
 

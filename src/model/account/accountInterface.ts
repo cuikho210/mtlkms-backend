@@ -7,6 +7,11 @@ export interface UserData {
     forget_pwd: string;
     slogan: string;
     created_at: string;
+    time_today: number;
+    time_week: number;
+    time_month: number;
+    time_year: number;
+    time_total: number;
 }
 
 export interface DbResult {
