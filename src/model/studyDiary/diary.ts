@@ -76,7 +76,6 @@ class Diary {
     }
 
     public getDiariesBySDTag(data: Array<number>): Promise<Array<diaryData>> {
-        console.log(data)
         return new Promise((resolve, reject) => {
             db.query(
                 `SELECT

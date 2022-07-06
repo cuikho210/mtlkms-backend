@@ -75,7 +75,6 @@ class DiaryController {
 
         let startTime = new Date(diaryData.start_at);
         let stopTime = new Date();
-        console.log(startTime, stopTime);
         let timeDiff = stopTime.getTime() - startTime.getTime();
         let timeDiffMinutes = Math.round(timeDiff / 60000);
 

@@ -5,20 +5,23 @@ import { DbResult, SDTagData, studyTimeData } from '../model/studyDiary/SDInterf
 class CronJob {
     private date: Date;
     private isSaturday: boolean;
-    private isFirstDay: boolean;
-    private isFirstMonth: boolean;
+    private isLastDay: boolean;
+    private isLastMonth: boolean;
 
     constructor () {
         this.date = new Date();
 
-        this.isSaturday = (this.date.getDay() == 6);
-        this.isFirstDay = (this.date.getDate() == 1);
-        this.isFirstMonth = (this.date.getMonth() == 0);
+        let lastDay: number = new Date(this.date.getFullYear(), this.date.getMonth() + 1, 0).getDate();
 
+        this.isSaturday = (this.date.getDay() == 6);
+        this.isLastDay = (this.date.getDate() == lastDay);
+        this.isLastMonth = (this.date.getMonth() == 12);
+
+        console.log('---------- Start Cronjob ---------------')
         console.log('Cronjob: ' + this.date);
         console.log('Is Saturday: ' + this.isSaturday);
-        console.log('Is first day: ' + this.isFirstDay);
-        console.log('Is first month: ' + this.isFirstMonth);
+        console.log('Is last day: ' + this.isLastDay);
+        console.log('Is last month: ' + this.isLastMonth);
         console.log('----------------------------------------');
 
         this.ResetSDTagTime();
@@ -40,12 +43,12 @@ class CronJob {
                 isResetTimeWeek = true;
             }
 
-            if (this.isFirstDay) {
+            if (this.isLastDay) {
                 await studyTime.saveTimeMonth([tag.user, tag.id, tag.time_month]);
                 isResetTimeMonth = true;
             }
 
-            if (this.isFirstMonth) {
+            if (this.isLastMonth && this.isLastDay) {
                 await studyTime.saveTimeYear([tag.user, tag.id, tag.time_year]);
                 isResetTimeYear = true;
             }
