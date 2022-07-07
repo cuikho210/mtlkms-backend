@@ -30,7 +30,10 @@ services:
       DB_USER: "" # Equal MYSQL_USER
       DB_PASSWORD: "" # Equal MYSQL_PASSWORD
       SALT: "" # Any string
-      EMAIL_PASSWORD: ""
+      EMAIL_HOST: "smtp.gmail.com" # Your Email Host
+      EMAIL_PORT: 465 # Your email port
+      EMAIL_USER: "" # Your email username
+      EMAIL_PASSWORD: "" # Your email password
       CLIENT_URL: "http://localhost:8080" # Your client URL
     links:
       - mysql

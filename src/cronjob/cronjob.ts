@@ -17,12 +17,13 @@ class CronJob {
         this.isLastDay = (this.date.getDate() == lastDay);
         this.isLastMonth = (this.date.getMonth() == 12);
 
-        console.log('---------- Start Cronjob ---------------')
+        console.log('\n');
+        console.log('---------------- \x1b[35m[model/cronjob]\x1b[0m ---------------------')
         console.log('Cronjob: ' + this.date);
         console.log('Is Saturday: ' + this.isSaturday);
         console.log('Is last day: ' + this.isLastDay);
         console.log('Is last month: ' + this.isLastMonth);
-        console.log('----------------------------------------');
+        console.log('------------------------------------------------------\n');
 
         this.ResetSDTagTime();
     }
