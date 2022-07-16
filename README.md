@@ -7,20 +7,29 @@ Backend: https://github.com/cuikho210/mtlkms-backend
 Frontend: https://github.com/cuikho210/mtlkms-frontend  
 Build: https://github.com/mtlkms/mtlkms.github.io
 
+## Yêu cầu
+- `docker`
+- `docker-compose`
+- `git`
+
 ## Dev
 ```bash
 git clone https://github.com/cuikho210/mtlkms-backend
 cd mtlkms-backend
-npm install
 mv docker-compose-demo.yml docker-compose.yml
 ```
 Chỉnh sửa `docker-compose.yml` theo ý của bạn :smile:  
 Sửa `nginx/host.conf` cho khớp với domain và SSL file của bạn  
 Sửa volume tại `docker-compose.yml` cho khớp với SSL file và `nginx/host.conf`  
 
-Sau khi đã cấu hình hoàn tất, chạy `docker-compose up`
+Sau khi đã cấu hình hoàn tất, chạy:
 
-Sử dụng sqlclient bất kì truy cập vào `mariadb` `localhost:3306` với mật khẩu bạn đã đặt trong `docker-compose.yml`.  
+```bash
+docker-compose run --rm app npm install
+docker-compose up
+```
+
+Sử dụng sqlclient bất kì truy cập vào `mariadb` `localhost:3307` với mật khẩu bạn đã đặt trong `docker-compose.yml`.  
 Tạo database có tên `mtlkms`  
 Tạo lần lượt từng bảng bằng script trong `database.sql`
 
